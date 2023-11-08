@@ -16,17 +16,29 @@ import dev.advo.fs.net.ondemand.OnDemandResponse;
  * A worker which services 'on-demand' requests.
  * @author Graham
  */
-public final class OnDemandRequestWorker extends RequestWorker<OnDemandRequest, IndexedFileSystem> {
-	
+public final class OnDemandRequestWorker implements Runnable {
+
+	/**
+	 * The resource provider.
+	 */
+	private final IndexedFileSystem provider;
+	/**
+	 * An object used for locking checks to see if the worker is running.
+	 */
+	private final Object lock = new Object();
+	/**
+	 * A flag indicating if the worker should be running.
+	 */
+	private boolean running = true;
+
 	/**
 	 * Creates the 'on-demand' request worker.
 	 * @param fs The file system.
 	 */
 	public OnDemandRequestWorker(IndexedFileSystem fs) {
-		super(fs);
+		this.provider = fs;
 	}
 
-	@Override
 	protected ChannelRequest<OnDemandRequest> nextRequest() throws InterruptedException {
 		return RequestDispatcher.nextOnDemandRequest();
 	}
@@ -37,7 +49,6 @@ public final class OnDemandRequestWorker extends RequestWorker<OnDemandRequest, 
 	 * for index/file, a big endian int for the size of the data and then a byte[] with the file data.
 
 	 */
-	@Override
 	protected void service(IndexedFileSystem fs, Channel channel, OnDemandRequest request) throws IOException {
 		FileDescriptor desc = request.getFileDescriptor();
 				
@@ -53,4 +64,39 @@ public final class OnDemandRequestWorker extends RequestWorker<OnDemandRequest, 
 		channel.write(response);
 	}
 
+	/**
+	 * Stops this worker. The worker's thread may need to be interrupted.
+	 */
+	public final void stop() {
+		synchronized (lock) {
+			running = false;
+		}
+	}
+
+	@Override
+	public final void run() {
+		while (true) {
+			synchronized (lock) {
+				if (!running) {
+					break;
+				}
+			}
+
+			ChannelRequest<OnDemandRequest> request;
+			try {
+				request = nextRequest();
+			} catch (InterruptedException e) {
+				continue;
+			}
+
+			Channel channel = request.getChannel();
+
+			try {
+				service(provider, channel, request.getRequest());
+			} catch (IOException e) {
+				e.printStackTrace();
+				channel.close();
+			}
+		}
+	}
 }

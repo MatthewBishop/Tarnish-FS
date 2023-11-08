@@ -28,7 +28,7 @@ public final class RequestWorkerPool {
 	/**
 	 * A list of request workers.
 	 */
-	private final List<RequestWorker<?, ?>> workers = new ArrayList<RequestWorker<?, ?>>();
+	private final List<OnDemandRequestWorker> workers = new ArrayList<OnDemandRequestWorker>();
 	
 	/**
 	 * The request worker pool.
@@ -48,20 +48,9 @@ public final class RequestWorkerPool {
 			workers.add(new OnDemandRequestWorker(new IndexedFileSystem(base, true)));
 		}
 		
-		for (RequestWorker<?, ?> worker : workers) {
+		for (OnDemandRequestWorker worker : workers) {
 			service.submit(worker);
 		}
-	}
-	
-	/**
-	 * Stops the threads in the pool.
-	 */
-	public void stop() {
-		for (RequestWorker<?, ?> worker : workers) {
-			worker.stop();
-		}
-		
-		service.shutdownNow();
 	}
 
 }
