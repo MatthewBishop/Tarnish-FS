@@ -6,6 +6,11 @@ package dev.advo.fs.fs;
  */
 public final class FileDescriptor {
 	
+	@Override
+	public String toString() {
+		return " [type=" + type + ", file=" + file + "]";
+	}
+
 	/**
 	 * The file type.
 	 */

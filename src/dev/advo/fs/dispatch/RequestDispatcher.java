@@ -39,9 +39,9 @@ public final class RequestDispatcher {
 	 * @param request The request.
 	 */
 	public static void dispatch(Channel channel, OnDemandRequest request) {
-		if (onDemandQueue.size() >= MAXIMUM_QUEUE_SIZE) {
-			channel.close();
-		}
+//		if (onDemandQueue.size() >= MAXIMUM_QUEUE_SIZE) {
+//			channel.close();
+//		}
 		onDemandQueue.add(new ChannelRequest<OnDemandRequest>(channel, request));
 	}
 	

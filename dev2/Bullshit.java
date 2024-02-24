@@ -2,10 +2,10 @@ import java.io.File;
 
 public class Bullshit {
 
-	static int start_id = 37005;
+	static int start_id = 37036;
     public static void main(String[] args) {
         // Specify the directory path you want to list files from
-        String directoryPath = "K:\\documents\\GitHub\\eternalscape-server4\\assets\\models\\eternalscape\\items\\";
+        String directoryPath = "K:\\mdls\\v2\\new\\";
 
         // Create a File object for the directory
         File directory = new File(directoryPath);

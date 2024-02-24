@@ -51,7 +51,8 @@ public final class OnDemandRequestWorker implements Runnable {
 	 */
 	protected void service(IndexedFileSystem fs, Channel channel, OnDemandRequest request) throws IOException {
 		FileDescriptor desc = request.getFileDescriptor();
-				
+		System.err.println("Serving file: " + desc.toString());
+
 		ByteBuffer buf = fs.getFile(desc);
 		int bufLen = buf.remaining();
 		int length = bufLen;
@@ -94,8 +95,9 @@ public final class OnDemandRequestWorker implements Runnable {
 			try {
 				service(provider, channel, request.getRequest());
 			} catch (IOException e) {
-				e.printStackTrace();
-				channel.close();
+			//	System.err.println("Error serving file: " + request.getRequest().getFileDescriptor().toString());
+			//	e.printStackTrace();
+			//	channel.close();
 			}
 		}
 	}

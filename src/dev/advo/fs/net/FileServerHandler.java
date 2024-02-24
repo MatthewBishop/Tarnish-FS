@@ -20,7 +20,8 @@ public final class FileServerHandler extends IdleStateAwareChannelUpstreamHandle
 	
 	@Override
 	public void channelIdle(ChannelHandlerContext ctx, IdleStateEvent e) throws Exception {
-		e.getChannel().close();
+//		System.out.println("Closing channel due to idle msg received.");
+//		e.getChannel().close();
 	}
 	
 	@Override
@@ -29,7 +30,8 @@ public final class FileServerHandler extends IdleStateAwareChannelUpstreamHandle
 		if (msg instanceof ServiceRequest) {
 			ServiceRequest request = (ServiceRequest) msg;
 			if (request.invalid()) {
-				e.getChannel().close();
+			//	System.out.println("Closing channel due to incorrect msg received. ");
+			//	e.getChannel().close();
 			} else {
 				e.getChannel().write(new ServiceResponse());
 			}
@@ -42,8 +44,9 @@ public final class FileServerHandler extends IdleStateAwareChannelUpstreamHandle
 	
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-		logger.log(Level.SEVERE, "Exception occured, closing channel...", e.getCause());
-		e.getChannel().close();
+//		logger.log(Level.SEVERE, "Exception occured, closing channel...", e.getCause());
+//		System.out.println("Closing channel due to incorrect msg received.");
+//		e.getChannel().close();
 	}
 
 }

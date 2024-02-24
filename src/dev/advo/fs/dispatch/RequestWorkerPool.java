@@ -43,7 +43,10 @@ public final class RequestWorkerPool {
 	 * @throws Exception if the file system cannot be created.
 	 */
 	public void start() throws Exception {
-		File base = new File("C:\\Users\\Home\\Downloads\\Tarnish Package\\cache\\");
+		//
+		//File base = new File("C:\\Users\\Home\\Downloads\\Tarnish Package\\cache\\");//"./cache/"
+		File base = new File("./cache/");//"./cache/"
+
 		for (int i = 0; i < THREADS_PER_REQUEST_TYPE; i++) {
 			workers.add(new OnDemandRequestWorker(new IndexedFileSystem(base, true)));
 		}
